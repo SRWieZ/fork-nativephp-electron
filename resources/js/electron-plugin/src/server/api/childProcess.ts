@@ -75,15 +75,13 @@ function startProcess(settings) {
             }
         });
 
-        if (state.processes[alias].settings.persistent) {
-            console.log(`Restarting persistent process [${alias}]...`);
+        if (getSettings(alias)?.persistent) {
+            console.log(`Watchdog: restart persistent process [${alias}]...`);
             delete state.processes[alias];
             startProcess(settings);
-        }
-        else {
+        } else {
             delete state.processes[alias];
         }
-
     });
 
     return {
@@ -100,9 +98,16 @@ function stopProcess(alias) {
         return;
     }
 
+    // Force the process to be non-persistent
+    let settings = getSettings(alias);
+    if (settings !== undefined) {
+        settings.persistent = false;
+    }
+
     console.log(`Stopping process [${alias}]...`);
-    state.processes[alias].settings.persistent = false;
-    proc.kill();
+    if (proc.kill()) {
+        // delete state.processes[alias];
+    }
 }
 
 function getProcess(alias) {
@@ -130,10 +135,12 @@ router.post('/stop', (req, res) => {
 router.post('/restart', (req, res) => {
     const {alias} = req.body;
 
-    console.log('Restarting process [' + alias + ']...');
+    const settings = {...getSettings(alias)};
 
-    // const settings = getSettings(alias);
-    const settings = { ...getSettings(alias) };
+    if (settings.persistent) {
+        console.log(`Watchdog: remove persistent flag from process [${alias}]...`);
+        state.processes[alias].settings.persistent = false;
+    }
     stopProcess(alias);
 
     console.log(settings);
@@ -144,7 +151,6 @@ router.post('/restart', (req, res) => {
     }
 
     const proc = startProcess(settings);
-    console.log('Process restarted [' + alias + ']...');
 
     res.json(proc);
 });
