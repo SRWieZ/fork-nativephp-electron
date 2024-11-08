@@ -75,11 +75,15 @@ function startProcess(settings) {
             }
         });
 
-        delete state.processes[alias];
-
-        if (persistent) {
+        if (state.processes[alias].settings.persistent) {
+            console.log(`Restarting persistent process [${alias}]...`);
+            delete state.processes[alias];
             startProcess(settings);
         }
+        else {
+            delete state.processes[alias];
+        }
+
     });
 
     return {
@@ -96,9 +100,9 @@ function stopProcess(alias) {
         return;
     }
 
-    if (proc.kill()) {
-        delete state.processes[alias];
-    }
+    console.log(`Stopping process [${alias}]...`);
+    state.processes[alias].settings.persistent = false;
+    proc.kill();
 }
 
 function getProcess(alias) {
@@ -126,9 +130,13 @@ router.post('/stop', (req, res) => {
 router.post('/restart', (req, res) => {
     const {alias} = req.body;
 
-    const settings = getSettings(alias);
+    console.log('Restarting process [' + alias + ']...');
 
+    // const settings = getSettings(alias);
+    const settings = { ...getSettings(alias) };
     stopProcess(alias);
+
+    console.log(settings);
 
     if (settings === undefined) {
         res.sendStatus(410);
@@ -136,6 +144,7 @@ router.post('/restart', (req, res) => {
     }
 
     const proc = startProcess(settings);
+    console.log('Process restarted [' + alias + ']...');
 
     res.json(proc);
 });
