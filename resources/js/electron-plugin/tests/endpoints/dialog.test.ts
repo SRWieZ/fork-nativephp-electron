@@ -1,17 +1,16 @@
+import { vi, describe, it, expect, afterEach, beforeEach } from 'vitest';
 import startAPIServer, { APIProcess } from "../../src/server/api";
 import axios from "axios";
 import electron from "electron";
 
 let apiServer: APIProcess;
 
-jest.mock('electron', () => ({
-    ...jest.requireActual('electron'),
-
+vi.mock('electron', () => ({
     dialog: {
-        showOpenDialogSync: jest.fn(() => ['open dialog result']),
-        showSaveDialogSync: jest.fn(() => ['save dialog result']),
-        showMessageBoxSync: jest.fn(() => 1),
-        showErrorBox: jest.fn(),
+        showOpenDialogSync: vi.fn(() => ['open dialog result']),
+        showSaveDialogSync: vi.fn(() => ['save dialog result']),
+        showMessageBoxSync: vi.fn(() => 1),
+        showErrorBox: vi.fn(),
     }
 }));
 

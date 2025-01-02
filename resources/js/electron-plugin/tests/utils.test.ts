@@ -2,11 +2,16 @@ import { notifyLaravel } from "../src/server/utils";
 import state from "../src/server/state";
 import axios from "axios";
 
-jest.mock('axios', () => ({
-  post: jest.fn(),
-}));
+import { expect, describe, it, vi, afterEach, beforeEach } from 'vitest'
 
 describe('Utils test', () => {
+    beforeEach(() => {
+        vi.mock('axios');
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks()
+    })
 
   it('notifies laravel', async () => {
     state.phpPort = 8000;

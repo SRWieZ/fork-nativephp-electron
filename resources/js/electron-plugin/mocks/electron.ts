@@ -1,12 +1,17 @@
-module.exports = {
+import { vi } from 'vitest';
+
+const electron = {
     app: {
-        getPath: jest.fn().mockReturnValue('path'),
-        isPackaged: jest.fn().mockResolvedValue(function () {
-            console.log('isPackaged');
-            return false;
-        })
+        getPath: vi.fn().mockReturnValue('path'),
+        isPackaged: false,
     },
     powerMonitor: {
-        addListener: jest.fn()
+        addListener: vi.fn(),
     }
-}
+};
+
+// Make sure this is an object with properties
+Object.defineProperty(electron, '__esModule', { value: true });
+export default electron;
+export const app = electron.app;
+export const powerMonitor = electron.powerMonitor;
