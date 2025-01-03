@@ -20,6 +20,11 @@ export default defineConfig({
         //         path.resolve('../node_modules')
         //     ]
         // },
+        server: {
+            deps: {
+                fallbackCJS:true,
+            }
+        }
         // Set up Node environment
         // environment: 'node',
         // Handle module paths
