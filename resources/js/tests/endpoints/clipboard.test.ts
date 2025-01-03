@@ -1,30 +1,31 @@
-import startAPIServer, { APIProcess } from "../../src/server/api";
+import { vi, describe, it, expect, afterEach, beforeEach } from 'vitest';
+
+vi.mock('electron', () => ({
+    clipboard: {
+        readText: vi.fn(() => 'clipboard text'),
+        readHTML: vi.fn(() => 'clipboard html'),
+        readImage: vi.fn(() => mockReadImage),
+        writeText: vi.fn(),
+        writeHTML: vi.fn(),
+        writeImage: vi.fn(),
+        clear: vi.fn(),
+    },
+    nativeImage: {
+        createFromDataURL: vi.fn(() => 'native image'),
+    }
+}));
+
+import startAPIServer, { APIProcess } from "../../electron-plugin/src/server/api";
 import axios from "axios";
 import electron from "electron";
 
 let apiServer: APIProcess;
 
 const mockReadImage = {
-  isEmpty: jest.fn(() => true),
-  toDataURL: jest.fn(() => 'clipboard image'),
+  isEmpty: vi.fn(() => true),
+  toDataURL: vi.fn(() => 'clipboard image'),
 };
 
-jest.mock('electron', () => ({
-    ...jest.requireActual('electron'),
-
-    clipboard: {
-        readText: jest.fn(() => 'clipboard text'),
-        readHTML: jest.fn(() => 'clipboard html'),
-        readImage: jest.fn(() => mockReadImage),
-        writeText: jest.fn(),
-        writeHTML: jest.fn(),
-        writeImage: jest.fn(),
-        clear: jest.fn(),
-    },
-    nativeImage: {
-        createFromDataURL: jest.fn(() => 'native image'),
-    }
-}));
 
 describe('Clipboard test', () => {
   beforeEach(async () => {

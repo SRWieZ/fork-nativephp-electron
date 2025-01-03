@@ -1,9 +1,4 @@
 import { vi, describe, it, expect, afterEach, beforeEach } from 'vitest';
-import startAPIServer, { APIProcess } from "../../src/server/api";
-import axios from "axios";
-import electron from "electron";
-
-let apiServer: APIProcess;
 
 vi.mock('electron', () => ({
     dialog: {
@@ -13,6 +8,11 @@ vi.mock('electron', () => ({
         showErrorBox: vi.fn(),
     }
 }));
+import startAPIServer, { APIProcess } from "../../electron-plugin/src/server/api";
+import axios from "axios";
+import electron from "electron";
+
+let apiServer: APIProcess;
 
 describe('Dialog test', () => {
   beforeEach(async () => {

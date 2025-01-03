@@ -29,8 +29,8 @@
         "build:linux-x64": "cross-env node php.js --linux --x64 && cross-env npm run build && cross-env node ./node_modules/electron-builder/cli.js -p never --linux --config --x64",
         "plugin:build": "node node_modules/typescript/bin/tsc --project electron-plugin",
         "plugin:build:watch": "npm run plugin:build -- -W",
-        "plugin:test": "vitest run --root electron-plugin --coverage.all",
-        "plugin:test:watch": "vitest watch --root electron-plugin  --coverage.all"
+        "plugin:test": "vitest run",
+        "plugin:test:watch": "vitest watch"
     },
     "dependencies": {
         "@electron-toolkit/preload": "^3.0.1",

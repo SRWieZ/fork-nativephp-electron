@@ -1,16 +1,7 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
-vi.mock('electron', async () => {
-    return await import('../mocks/electron');
-});
-vi.mock('electron', async (importOriginal) => {
-    const mod = await importOriginal<typeof import('electron')>()
-    return {
-        ...mod,
-        mocked: vi.fn()
-    }
-})
+vi.mock('electron');
 
-import startAPIServer, {APIProcess} from "../src/server/api";
+import startAPIServer, {APIProcess} from "../electron-plugin/src/server/api";
 import axios from "axios";
 
 describe('API test', () => {
