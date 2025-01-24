@@ -132,9 +132,14 @@ function stopProcess(alias) {
 
     console.log('Process [' + alias + '] stopping with PID [' + proc.pid + '].');
 
-    // @ts-ignore
-    killSync(proc.pid, 'SIGTERM', true); // Kill tree
-    proc.kill(); // Does not work but just in case. (do not put before killSync)
+    // If a parent process SIGKILL all the child process, the child process will not be able to clean up its resources.
+    try {
+        // @ts-ignore
+        killSync(proc.pid, 'SIGTERM', true); // Kill tree
+        proc.kill(); // Does not work but just in case. (do not put before killSync)
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export function stopAllProcesses() {

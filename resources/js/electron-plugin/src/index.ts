@@ -241,6 +241,7 @@ class NativePHP {
     this.processes
       .filter((p) => p !== undefined)
       .forEach((process) => {
+        // If a parent process hard kills the child process, the child process will not be able to clean up its resources.
         try {
           // @ts-ignore
           killSync(process.pid, 'SIGTERM', true); // Kill tree
